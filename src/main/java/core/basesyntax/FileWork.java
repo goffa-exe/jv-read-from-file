@@ -10,16 +10,15 @@ import java.util.Arrays;
 public class FileWork {
     public String[] readFromFile(String fileName) {
         StringBuilder builder = new StringBuilder();
+        Path path = Path.of(fileName);
         
-        try {
-            Path path = Path.of(fileName);
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(path.toFile()));
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path.toFile()))) {
             String fileContent = bufferedReader.readLine();
             
             while (fileContent != null) {
                 String [] splitRow = fileContent.toLowerCase().split("[\\s.,?!]+");
                 for (String word : splitRow) {
-                    if (word.charAt(0) == 'w') {
+                    if (word.startsWith("w")) {
                         builder.append(word).append(" ");
                     }
                 }
@@ -31,7 +30,7 @@ public class FileWork {
             throw new RuntimeException("Couldn't open a file", e);
         }
         
-        if (builder.toString().isEmpty()) {
+        if (builder.isEmpty()) {
             return new String[0];
         }
         String [] result = builder.toString().split(" ");
